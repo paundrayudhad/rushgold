@@ -14,7 +14,7 @@ class DashboardOverview extends BaseWidget
     {
         return [
             Stat::make('Total Orders', number_format(Order::count())),
-            Stat::make('Total Revenue', 'Rp ' . number_format(Order::sum('total_amount'))),
+            Stat::make('Total Revenue', '$ ' . number_format(Order::sum('total_amount'))),
             Stat::make('Total Products', number_format(Product::count())),
             Stat::make('Total Users', number_format(User::count())),
         ];

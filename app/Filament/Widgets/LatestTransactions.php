@@ -35,7 +35,7 @@ class LatestTransactions extends BaseWidget
 
             Tables\Columns\TextColumn::make('total_amount')
                 ->label('Total')
-                ->money('IDR', true),
+                ->money('USD', true),
 
             Tables\Columns\TextColumn::make('status')
                 ->label('Status')
