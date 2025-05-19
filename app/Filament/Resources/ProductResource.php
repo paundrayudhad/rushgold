@@ -15,6 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Set;
+use Filament\Forms\Get;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -30,7 +31,8 @@ class ProductResource extends Resource
         return $form->schema([
             Select::make('category_id')
                 ->relationship('category', 'name')
-                ->required(),
+                ->required()
+                ->live(),
 
             TextInput::make('name')
                 ->required()
@@ -42,7 +44,6 @@ class ProductResource extends Resource
             TextInput::make('slug')
                 ->required()
                 ->unique(ignoreRecord: true),
-
             Textarea::make('description'),
             TextInput::make('price')
                 ->numeric()
@@ -50,7 +51,14 @@ class ProductResource extends Resource
             TextInput::make('stock')
                 ->numeric()
                 ->default(0),
-            TextInput::make('faction'),
+            Select::make('faction')
+                ->label('Faction')
+                ->options([
+                    'houde' => 'Houde',
+                    'alliance' => 'Alliance',
+                ])
+                ->visible(fn(Get $get) => optional($get('category_id') ? \App\Models\Category::find($get('category_id')) : null)?->slug === 'gold')
+                ->required(fn(Get $get) => optional($get('category_id') ? \App\Models\Category::find($get('category_id')) : null)?->slug === 'gold'),
             FileUpload::make('image_path')
                 ->label('Product Image')
                 ->image()
