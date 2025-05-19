@@ -79,6 +79,26 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    document.querySelectorAll('form[action="{{ route('addcart') }}"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();  // cegah submit dulu agar animasi jalan
+
+            const btn = this.querySelector('button[type="submit"]');
+            btn.classList.add('added');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+
+            // Submit form setelah animasi selesai (misal 600ms)
+            setTimeout(() => {
+                this.submit();
+            }, 600);
+        });
+    });
+</script>
+@endpush
+
 @push('styles')
 <style>
 .product-card {
@@ -155,5 +175,25 @@
     transform: scale(1.05);
     box-shadow: 0 0 15px var(--primary-gold);
 }
+@keyframes addedToCart {
+  0% {
+    transform: scale(1);
+    background-color: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: #ffc107; /* warna kuning cerah */
+    box-shadow: 0 0 15px var(--primary-gold);
+  }
+  100% {
+    transform: scale(1);
+    background-color: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  }
+}
+
+.btn-gold.added {
+  animation: addedToCart 0.5s ease forwards;
+}
+
 </style>
 @endpush
