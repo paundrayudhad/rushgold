@@ -25,38 +25,39 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
-{
-    return $form
-        ->schema([
-            TextInput::make('name')->required(),
-            TextInput::make('email')->email()->required(),
-            TextInput::make('password')
-                ->password()
-                ->required(fn (string $context) => $context === 'create')
-                ->dehydrated(fn ($state) => filled($state))
-                ->hash(fn ($state) => bcrypt($state)),
+    {
+        return $form
+            ->schema([
+                TextInput::make('name')->required(),
+                TextInput::make('email')->email()->required(),
+                TextInput::make('password')
+                    ->password()
+                    ->required(fn(string $context) => $context === 'create')
+                    ->dehydrated(fn($state) => filled($state))
+                    ->mutateDehydratedStateUsing(fn($state) => filled($state) ? bcrypt($state) : null),
 
-            Select::make('role')
-                ->label('Role')
-                ->options(Role::pluck('name', 'name')) // dropdown dari role
-                ->required()
-                ->afterStateUpdated(function ($state, $set, $get, $record) {
-                    if ($record) {
-                        $record->syncRoles([$state]);
-                    }
-                })
-                ->dehydrated(false),
-        ]);
-}
+
+                Select::make('role')
+                    ->label('Role')
+                    ->options(Role::pluck('name', 'name')) // dropdown dari role
+                    ->required()
+                    ->afterStateUpdated(function ($state, $set, $get, $record) {
+                        if ($record) {
+                            $record->syncRoles([$state]);
+                        }
+                    })
+                    ->dehydrated(false),
+            ]);
+    }
 
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('email')->searchable(),
-            TextColumn::make('roles.name')->label('Role'),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('email')->searchable(),
+                TextColumn::make('roles.name')->label('Role'),
             ])
             ->filters([
                 //
