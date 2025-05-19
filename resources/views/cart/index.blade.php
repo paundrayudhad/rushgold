@@ -3,7 +3,7 @@
 @section('title', 'Your Cart - Rush Gold')
 
 @section('content')
-<div class="container mt-5 ">
+<div class="container mt-5 mb-5">
     <h2 class="mb-4" style="color: var(--primary-gold);">Your Shopping Cart</h2>
 
     @if(session('success'))
@@ -38,11 +38,11 @@
                         </td>
                         <td>${{ number_format($item->product->price, 2) }}</td>
                         <td>
-                            <input type="number" 
-                                   class="quantity-input form-control text-center" 
-                                   value="{{ $item->quantity }}" 
-                                   min="1" 
-                                   max="{{ $item->product->stock }}" 
+                            <input type="number"
+                                   class="quantity-input form-control text-center"
+                                   value="{{ $item->quantity }}"
+                                   min="1"
+                                   max="{{ $item->product->stock }}"
                                    data-product-id="{{ $item->product->id }}" />
                         </td>
                         <td class="subtotal">${{ number_format($item->product->price * $item->quantity, 2) }}</td>
@@ -59,11 +59,11 @@
 
         <div class="d-flex justify-content-between align-items-center mt-4">
             <h4>Total: <span style="color: var(--primary-gold);" id="total-price">${{ number_format($totalPrice, 2) }}</span></h4>
-        <a href="" class="btn btn-gold">
+        <a href="{{ route('checkout.index') }}" class="btn btn-gold">
                     <i class="fas fa-credit-card me-1"></i> Proceed to Checkout
                 </a>
         </div>
-         
+
     @endif
 </div>
     <script>
@@ -125,13 +125,14 @@
                 if (!confirm('Remove this item from cart?')) return;
 
                 try {
-                    const response = await fetch("{{ url('cart') }}/" + productId, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        }
-                    });
+                    const response = await fetch(`{{ route('cart.remove', '') }}/${productId}`, {
+    method: 'DELETE',
+    headers: {
+        'X-CSRF-TOKEN': csrfToken,
+        'Accept': 'application/json'
+    }
+});
+
 
                     if (!response.ok) {
                         throw new Error('Failed to remove item');

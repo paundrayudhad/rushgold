@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -43,18 +44,35 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Product added to cart successfully.');
     }
     public function remove($id)
-    {
-        $cart = Cart::where('user_id', Auth::id())
-            ->where('product_id', $id)
-            ->first();
+{
+    $cart = Cart::where('user_id', Auth::id())
+        ->where('product_id', $id)
+        ->first();
 
-        if ($cart) {
-            $cart->delete();
-            return redirect()->back()->with('success', 'Product removed from cart successfully.');
-        }
+    if ($cart) {
+        $cart->delete();
 
-        return redirect()->back()->with('error', 'Product not found in cart.');
+        // Hitung ulang total harga setelah penghapusan
+        $totalPrice = Cart::where('user_id', Auth::id())
+            ->join('products', 'products.id', '=', 'carts.product_id')
+            ->sum(DB::raw('products.price * carts.quantity'));
+
+        $cartIsEmpty = Cart::where('user_id', Auth::id())->count() === 0;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product removed from cart successfully.',
+            'totalPrice' => $totalPrice,
+            'cartIsEmpty' => $cartIsEmpty,
+        ]);
     }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Product not found in cart.',
+    ], 404);
+}
+
     public function update(Request $request)
 {
     $quantities = $request->input('quantities', []);
