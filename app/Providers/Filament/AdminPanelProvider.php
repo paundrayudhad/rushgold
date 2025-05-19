@@ -19,6 +19,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Widgets\DashboardOverview;
+use App\Filament\Widgets\LatestTransactions;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -40,7 +42,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                DashboardOverview::class,
+                LatestTransactions::class,
             ])
             ->middleware([
                 EncryptCookies::class,
