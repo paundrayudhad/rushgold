@@ -32,7 +32,7 @@ class OrderItemsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('product.name')->label('Produk'),
                 TextColumn::make('quantity')->label('Jumlah'),
-                TextColumn::make('price')->money('IDR')->label('Harga Satuan'),
+                TextColumn::make('price')->money('USD')->label('Harga Satuan'),
 
             ])
             ->defaultSort('id')

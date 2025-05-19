@@ -54,9 +54,9 @@ class ProductResource extends Resource
             FileUpload::make('image_path')
                 ->label('Product Image')
                 ->image()
-                ->imageEditor()
                 ->directory('products')
                 ->visibility('public')
+                ->previewable(true)
                 ->nullable(),
         ]);
     }

@@ -34,35 +34,30 @@ class OrderResource extends Resource
             ->schema([
                 //
                 TextInput::make('order_number')
-                    ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255)
                     ->disabled(),
                 TextInput::make('game_nickname')
-                    ->required()
                     ->maxLength(255)
                     ->disabled(),
                 TextInput::make('total_amount')
-                    ->required()
                     ->numeric()
+                    ->prefix('$')
                     ->maxLength(255)
                     ->disabled(),
                 TextInput::make('payment_method')
-                    ->required()
                     ->maxLength(255)
                     ->placeholder('paypal, crypto')
                     ->disabled(),
                 FileUpload::make('payment_proof')
                     ->label('Bukti Pembayaran')
                     ->image()
-                    ->imageEditor()
                     ->directory('orders')
                     ->visibility('public')
-                    ->nullable()
+                    ->previewable(true)
                     ->disabled(),
                 TextInput::make('transaction_proof')
                     ->label('Bukti Transaksi')
-                    ->required()
                     ->maxLength(255)
                     ->disabled(),
                 Select::make('status')
@@ -83,7 +78,7 @@ class OrderResource extends Resource
                 TextColumn::make('order_number')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('User')->searchable(),
                 TextColumn::make('game_nickname')->label('Nickname'),
-                TextColumn::make('total_amount')->money('IDR')->sortable(),
+                TextColumn::make('total_amount')->money('USD')->sortable(),
 
                 TextColumn::make('status')
                     ->badge()
@@ -134,9 +129,9 @@ class OrderResource extends Resource
         ];
     }
     public static function canCreate(): bool
-{
-    return false;
-}
+    {
+        return false;
+    }
 
     public static function getPages(): array
     {
